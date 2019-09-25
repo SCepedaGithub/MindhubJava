@@ -1,4 +1,4 @@
-package com.codeoftheweb.salvo;
+package com.codeoftheweb.salvo.Models;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,12 +18,12 @@ public class Game {
     private Date creationDate;
 
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
-    Set<GamePlayer> gamePlayers;
+    private Set<GamePlayer> gamePlayers;
 
     public Game() { }
 
-    public Game(Date created) {
-        this.creationDate = created;
+    public Game(Date creationDate) {
+        this.creationDate = creationDate;
 
     }
 
@@ -37,14 +37,20 @@ public class Game {
     }
 
     public Set<GamePlayer> getGamePlayers() {
+
         return gamePlayers;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(Date creationDate)
+    {
         this.creationDate = creationDate;
     }
 
     public void setGamePlayers(Set<GamePlayer> gamePlayers) {
+
         this.gamePlayers = gamePlayers;
     }
+
+
+
 }

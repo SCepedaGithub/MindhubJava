@@ -1,10 +1,10 @@
-package com.codeoftheweb.salvo;
+package com.codeoftheweb.salvo.Models;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
-
+@Entity
 public class GamePlayer {
 
     @Id
@@ -31,18 +31,22 @@ public class GamePlayer {
     }
 
     public long getId() {
+
         return id;
     }
 
     public Date getJoinDate() {
+
         return joinDate;
     }
 
     public Player getPlayer() {
+
         return player;
     }
 
     public Game getGame() {
+
         return game;
     }
 }
