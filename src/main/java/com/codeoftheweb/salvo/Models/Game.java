@@ -24,7 +24,6 @@ public class Game {
 
     public Game(Date creationDate) {
         this.creationDate = creationDate;
-
     }
 
     public Date getCreationDate() {
@@ -43,6 +42,7 @@ public class Game {
 
     public void setCreationDate(Date creationDate)
     {
+
         this.creationDate = creationDate;
     }
 
