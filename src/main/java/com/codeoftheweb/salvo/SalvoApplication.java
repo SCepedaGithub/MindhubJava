@@ -4,10 +4,7 @@ import com.codeoftheweb.salvo.Models.Game;
 import com.codeoftheweb.salvo.Models.GamePlayer;
 import com.codeoftheweb.salvo.Models.Player;
 import com.codeoftheweb.salvo.Models.Ship;
-import com.codeoftheweb.salvo.Repositories.GamePlayerRepository;
-import com.codeoftheweb.salvo.Repositories.GameRepository;
-import com.codeoftheweb.salvo.Repositories.PlayerRepository;
-import com.codeoftheweb.salvo.Repositories.ShipRepository;
+import com.codeoftheweb.salvo.Repositories.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +22,8 @@ public class SalvoApplication {
 
 	@Bean
 	public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository,
-									  GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository) {
+                                      GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository,
+                                      SalvoRepository salvoRepository) {
 		return (args) -> {
 			// save players
 			Player p1= new Player("j.bauer@ctu.gov");
@@ -113,6 +111,7 @@ public class SalvoApplication {
 					s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21,
 					s22, s23, s24, s25, s26, s27));
 
-		};
+			
+        };
 	}
 }
