@@ -4,7 +4,10 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -20,6 +23,9 @@ public class Game {
     @OneToMany(mappedBy="game", fetch=FetchType.EAGER)
     private Set<GamePlayer> gamePlayers;
 
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
+    private Set<Score> scores;
+
     public Game() { }
 
     public Game(Date creationDate) {
@@ -31,6 +37,23 @@ public class Game {
         return creationDate;
     }
 
+    public Map<String, Object> makeGameDTO() {
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("id", this.getId());
+        dto.put("creationDate", this.getCreationDate());
+        dto.put("gamePlayers", this.getGamePlayers().stream()
+                .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
+                .collect(Collectors.toList()));
+        dto.put("scores", this.getGamePlayers().stream()
+                .map(gamePlayer -> {
+                    if (gamePlayer.getScore().isPresent())
+                        return gamePlayer.getScore().get().makeScoreDTO();
+                    else return null;
+                })
+                .collect(Collectors.toList()));
+        return dto;
+    }
+
     public long getId() {
         return id;
     }
@@ -38,6 +61,10 @@ public class Game {
     public Set<GamePlayer> getGamePlayers() {
 
         return gamePlayers;
+    }
+
+    public Set<Score> getScores() {
+        return scores;
     }
 
     public void setCreationDate(Date creationDate)

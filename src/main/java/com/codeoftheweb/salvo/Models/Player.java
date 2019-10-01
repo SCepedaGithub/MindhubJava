@@ -4,6 +4,9 @@ import com.codeoftheweb.salvo.Models.GamePlayer;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -19,9 +22,23 @@ public class Player {
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     private Set<GamePlayer> gamePlayers;
 
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
+    private Set<Score> scores;
+
     public Player() { }
 
-    public Player( String userName) {
+    public Map<String, Object> makePlayerDTO() {
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("id", this.getId());
+        dto.put("email", this.getUserName());
+        return dto;
+    }
+
+    public Set<Score> getScores() {
+        return scores;
+    }
+
+    public Player(String userName) {
 
         this.userName = userName;
     }
@@ -48,5 +65,12 @@ public class Player {
     public Set<GamePlayer> getGamePlayers() {
 
         return gamePlayers;
+    }
+
+    public Optional<Score> getScore(Game game) {
+        Optional<Score> score = this.getScores().stream().filter(score1 -> score1.getGame()
+                .getId() == game.getId()).findFirst();
+        return score;
+
     }
 }

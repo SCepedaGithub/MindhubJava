@@ -3,6 +3,8 @@ package com.codeoftheweb.salvo.Models;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -46,5 +48,11 @@ public class Ship {
         return id;
     }
 
+    public Map<String, Object> makeShipDTO() {
+        Map<String, Object> shipDto = new LinkedHashMap<String, Object>();
+        shipDto.put("type", this.getShipType());
+        shipDto.put("locations", this.getLocations());
+        return shipDto;
+    }
 
 }

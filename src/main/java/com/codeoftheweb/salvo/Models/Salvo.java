@@ -3,6 +3,8 @@ package com.codeoftheweb.salvo.Models;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -21,14 +23,14 @@ public class Salvo {
     @Column(name = "salvoLocation")
     Set<String> locations;
 
-    public int getTurn() {
-        return turn;
-    }
 
     public GamePlayer getGamePlayer() {
         return gamePlayer;
     }
 
+    public int getTurn() {
+        return turn;
+    }
     public Set<String> getLocations() {
         return locations;
     }
@@ -36,7 +38,7 @@ public class Salvo {
     public Salvo() {
     }
 
-    public Salvo(GamePlayer gamePlayer, int turn, Set<String> locations) {
+    public Salvo(int turn, GamePlayer gamePlayer, Set<String> locations) {
         this.gamePlayer = gamePlayer;
         this.turn = turn;
         this.locations = locations;
@@ -45,5 +47,14 @@ public class Salvo {
     public long getId() {
         return id;
     }
+
+    public Map<String, Object> makeSalvoDTO() {
+        Map<String, Object> salvoDto = new LinkedHashMap<String, Object>();
+        salvoDto.put("turn", this.getTurn());
+        salvoDto.put("player", this.getGamePlayer().getId());
+        salvoDto.put("locations", this.getLocations());
+        return salvoDto;
+    }
+
 
 }

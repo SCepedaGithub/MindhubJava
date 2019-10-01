@@ -3,8 +3,7 @@ package com.codeoftheweb.salvo.Models;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class GamePlayer {
@@ -26,7 +25,8 @@ public class GamePlayer {
     @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
     private Set<Ship> ships;
 
-
+    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
+    private Set<Salvo> salvoes;
 
     public GamePlayer() {
     }
@@ -37,6 +37,14 @@ public class GamePlayer {
         this.game = game;
     }
 
+    public Map<String, Object> makeGamePlayerDTO() {
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("id", this.getId());
+        dto.put("player", this.getPlayer().makePlayerDTO());
+        return dto;
+
+    }
+
     public Set<Ship> getShips() {
         return ships;
     }
@@ -44,6 +52,12 @@ public class GamePlayer {
 
         return id;
     }
+
+    public Set<Salvo> getSalvoes() {
+
+        return salvoes;
+    }
+
 
     public Date getJoinDate() {
 
@@ -58,5 +72,10 @@ public class GamePlayer {
     public Game getGame() {
 
         return game;
+    }
+
+    public Optional<Score> getScore() {
+
+        return this.getPlayer().getScore(this.getGame());
     }
 }
