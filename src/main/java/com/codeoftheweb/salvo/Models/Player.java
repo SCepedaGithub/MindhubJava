@@ -18,6 +18,7 @@ public class Player {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
     private String userName;
+    private String password;
 
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     private Set<GamePlayer> gamePlayers;
@@ -26,6 +27,14 @@ public class Player {
     private Set<Score> scores;
 
     public Player() { }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Map<String, Object> makePlayerDTO() {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
@@ -38,9 +47,10 @@ public class Player {
         return scores;
     }
 
-    public Player(String userName) {
+    public Player(String userName, String password) {
 
         this.userName = userName;
+        this.password = password;
     }
 
     public long getId() {
@@ -73,4 +83,14 @@ public class Player {
         return score;
 
     }
+/*
+    public long WinScore = this.getScores().stream().filter(score -> score.getScore() == 1.0D ).count();
+
+    public long TieScore = this.getScores().stream().filter(score -> score.getScore() == 0.5D ).count();
+
+    public long LostScore = this.getScores().stream().filter(score -> score.getScore() == 0.0D ).count();
+
+    public double Total= WinScore+TieScore*0.5D;
+
+ */
 }
