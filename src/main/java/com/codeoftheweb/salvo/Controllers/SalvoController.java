@@ -5,11 +5,12 @@ import com.codeoftheweb.salvo.Repositories.GamePlayerRepository;
 import com.codeoftheweb.salvo.Repositories.GameRepository;
 import com.codeoftheweb.salvo.Repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,13 +22,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class SalvoController {
 
-        @Autowired
-        private GameRepository gRepo;
+    @Autowired
+    private GameRepository gRepo;
     @Autowired
     private GamePlayerRepository gpRepo;
     @Autowired
     private PlayerRepository pRepo;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @RequestMapping("/games")
@@ -46,6 +48,21 @@ public class SalvoController {
                 .collect(Collectors.toList()));
         return dto;
         }
+
+    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    public ResponseEntity<Object> CreatePlayer(@RequestParam String username, @RequestParam String password) {
+
+        if (username.isEmpty() || password.isEmpty()) {
+            return new ResponseEntity<>("Missing Data", HttpStatus.FORBIDDEN);
+        }
+
+        if (pRepo.findByUserName(username) != null) {
+            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+        }
+
+        pRepo.save(new Player(username, passwordEncoder.encode(password)));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
