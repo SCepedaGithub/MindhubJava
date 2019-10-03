@@ -3,7 +3,10 @@ package com.codeoftheweb.salvo.Controllers;
 import com.codeoftheweb.salvo.Models.*;
 import com.codeoftheweb.salvo.Repositories.GamePlayerRepository;
 import com.codeoftheweb.salvo.Repositories.GameRepository;
+import com.codeoftheweb.salvo.Repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,23 +22,38 @@ import java.util.stream.Collectors;
 public class SalvoController {
 
         @Autowired
-        private GameRepository repo;
+        private GameRepository gRepo;
     @Autowired
-    private GamePlayerRepository repo2;
+    private GamePlayerRepository gpRepo;
+    @Autowired
+    private PlayerRepository pRepo;
+
+
 
     @RequestMapping("/games")
-        public List<Map<String, Object>> getAll() {
-            return repo.findAll()
+    public Map<String, Object> getAll(Authentication authentication) {
+        Map<String, Object> dto = new LinkedHashMap<>();
+
+        if (isGuest(authentication)) {
+            dto.put("player", "Guest");
+        } else {
+            Player player = pRepo.findByUserName(authentication.getName());
+            dto.put("player", player.makePlayerDTO());
+        }
+        dto.put("games", gRepo.findAll()
                     .stream()
                     .map(game -> game.makeGameDTO())
-                    .collect(Collectors.toList()) ;
-
+                .collect(Collectors.toList()));
+        return dto;
         }
 
+    private boolean isGuest(Authentication authentication) {
+        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
+    }
 
     @RequestMapping("/game_view/{gamePlayerId}")
     public Map<String, Object> getAllGameViews(@PathVariable Long gamePlayerId) {
-        return makeGamePlayerDTO2(repo2.findById(gamePlayerId)
+        return makeGamePlayerDTO2(gpRepo.findById(gamePlayerId)
                 .get());
 
     }

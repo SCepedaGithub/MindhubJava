@@ -44,13 +44,14 @@ public class Game {
         dto.put("gamePlayers", this.getGamePlayers().stream()
                 .map(gamePlayer -> gamePlayer.makeGamePlayerDTO())
                 .collect(Collectors.toList()));
-        dto.put("scores", this.getGamePlayers().stream()
+        dto.put("scores", this.getScores().stream().map(score -> score.makeScoreDTO()).collect(Collectors.toList()));
+        /*dto.put("scores", this.getGamePlayers().stream()
                 .map(gamePlayer -> {
                     if (gamePlayer.getScore().isPresent())
                         return gamePlayer.getScore().get().makeScoreDTO();
                     else return null;
                 })
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()));*/
         return dto;
     }
 
