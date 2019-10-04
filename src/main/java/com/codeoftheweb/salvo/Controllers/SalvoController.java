@@ -68,10 +68,20 @@ public class SalvoController {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 
+
     @RequestMapping("/game_view/{gamePlayerId}")
-    public Map<String, Object> getAllGameViews(@PathVariable Long gamePlayerId) {
-        return makeGamePlayerDTO2(gpRepo.findById(gamePlayerId)
-                .get());
+    public ResponseEntity<Map<String, Object>> getAllGameViews(Authentication authentication, @PathVariable Long gamePlayerId) {
+
+        GamePlayer gp = gpRepo.findById(gamePlayerId).get();
+
+        if (authentication.getName() == gp.getPlayer().getUserName()) {
+            return ResponseEntity.ok(makeGamePlayerDTO2(gpRepo.findById(gamePlayerId)
+                    .get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        //return makeGamePlayerDTO2();
 
     }
 
