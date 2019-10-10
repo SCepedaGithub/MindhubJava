@@ -37,6 +37,12 @@ public class GamePlayer {
         this.game = game;
     }
 
+    public GamePlayer(Player player, Game game) {
+        this.joinDate = new Date();
+        this.player = player;
+        this.game = game;
+    }
+
     public Map<String, Object> makeGamePlayerDTO() {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id", this.getId());
