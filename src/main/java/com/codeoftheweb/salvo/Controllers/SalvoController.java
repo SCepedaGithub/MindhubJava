@@ -73,7 +73,7 @@ public class SalvoController {
             if (game == null) {
                 return new ResponseEntity<>("No existe el juego", HttpStatus.FORBIDDEN);
             } else {
-                if (game.getGamePlayers().size() == 1) {
+                if (game.getGamePlayers().size() == 2) {
                     return new ResponseEntity<>("Game is full", HttpStatus.FORBIDDEN);
                 } else {
                     GamePlayer gamePlayer = gamePlayerRepository.save(new GamePlayer(player, game));
