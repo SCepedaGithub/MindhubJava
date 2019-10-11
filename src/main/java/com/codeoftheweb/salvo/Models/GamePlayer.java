@@ -51,6 +51,10 @@ public class GamePlayer {
 
     }
 
+    public void setShips(Set<Ship> ships) {
+        this.ships = ships;
+    }
+
     public Set<Ship> getShips() {
         return ships;
     }

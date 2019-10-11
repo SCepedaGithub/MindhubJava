@@ -4,6 +4,7 @@ import com.codeoftheweb.salvo.Models.*;
 import com.codeoftheweb.salvo.Repositories.GamePlayerRepository;
 import com.codeoftheweb.salvo.Repositories.GameRepository;
 import com.codeoftheweb.salvo.Repositories.PlayerRepository;
+import com.codeoftheweb.salvo.Repositories.ShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,8 @@ public class SalvoController {
     private PlayerRepository playerRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ShipRepository shipRepository;
 
 
     @RequestMapping("/games")
@@ -83,6 +86,37 @@ public class SalvoController {
 
         }
     }
+
+    @RequestMapping(path = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
+    public ResponseEntity<Object> placeShips(Authentication authentication, @PathVariable Long gamePlayerId, @RequestBody Set<Ship> ships) {
+
+        if (isGuest(authentication)) {
+            return new ResponseEntity<>("No esta loggeado", HttpStatus.UNAUTHORIZED);
+        }
+        Player player = playerRepository.findByUserName(authentication.getName());
+        if (player == null)
+            return new ResponseEntity<>("No existe el player para ese game", HttpStatus.UNAUTHORIZED);
+
+        GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).get();
+
+        if (gamePlayer == null) {
+            return new ResponseEntity<>("No existe el gameplayer", HttpStatus.UNAUTHORIZED);
+        }
+        if (!gamePlayer.getShips().isEmpty()) {
+            return new ResponseEntity<>("El usuario ya ubico sus barcos", HttpStatus.FORBIDDEN);
+        }
+
+        ships.forEach(
+                ship ->
+                        shipRepository.save(new Ship(gamePlayer, ship.getShipType(), ship.getLocations()))
+
+        );
+
+
+        return new ResponseEntity<>(makeMap("gpid", gamePlayer.getId()), HttpStatus.CREATED);
+
+    }
+
 
 
 
