@@ -182,6 +182,7 @@ public class SalvoController {
         Map<String, Object> dto2 = new LinkedHashMap<String, Object>();
         dto2.put("id", gamePlayer.getGame().getId());
         dto2.put("created", gamePlayer.getGame().getCreationDate());
+        dto2.put("gameState", getState(gamePlayer));
         dto2.put("gamePlayers", gamePlayer.getGame().getGamePlayers()
                 .stream()
                 .map(gamePlayer1 -> gamePlayer1.makeGamePlayerDTO())
@@ -200,6 +201,23 @@ public class SalvoController {
 
         return dto2;
 
+    }
+
+    public String getState(GamePlayer gamePlayer) {
+        String state = ""; // estadoDelJugadorDelGamePlayerPorReferencia
+        if (gamePlayer.getShips().isEmpty()) { // true si no tiene barcos
+            state = "PLACESHIPS";
+        } else if (gamePlayer.getOponent().isPresent() && !gamePlayer.getOponent().get().getShips().isEmpty()) { // true si hay oponente y tiene barcos
+
+            state = "EnterSalvo";
+
+
+        } else
+
+            state = "WAIT";
+
+
+        return state;
     }
 
     private Map<String, Object> makeHitsDto(GamePlayer gamePlayer) {
@@ -309,3 +327,9 @@ public class SalvoController {
         return map;
     }
 }
+
+/*  Resolver estados:
+    ver si hay oponente,
+    ver si todos los barcos estan hundidos (game over),
+
+ */
