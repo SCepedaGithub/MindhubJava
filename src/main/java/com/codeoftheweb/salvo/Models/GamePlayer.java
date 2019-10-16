@@ -88,4 +88,13 @@ public class GamePlayer {
 
         return this.getPlayer().getScore(this.getGame());
     }
+
+    public Optional<GamePlayer> getOponent() {
+        return this
+                .getGame()
+                .getGamePlayers()
+                .stream()
+                .filter(gamePlayerInStream -> gamePlayerInStream.getId() != this.getId())
+                .findFirst();
+    }
 }
