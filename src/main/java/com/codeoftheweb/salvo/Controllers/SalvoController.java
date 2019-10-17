@@ -203,22 +203,39 @@ public class SalvoController {
 
     }
 
-    public String getState(GamePlayer gamePlayer) {
+
+    public String getState(GamePlayer gamePlayer) { // estado consulta del juego
         String state = ""; // estadoDelJugadorDelGamePlayerPorReferencia
         if (gamePlayer.getShips().isEmpty()) { // true si no tiene barcos
             state = "PLACESHIPS";
-        } else if (gamePlayer.getOponent().isPresent() && !gamePlayer.getOponent().get().getShips().isEmpty()) { // true si hay oponente y tiene barcos
+            return state;
+        }
+        if (!(gamePlayer.getOponent().isPresent() && !gamePlayer.getOponent().get().getShips().isEmpty())) { // false : si hay oponente y tiene barcos
+            state = "WAITINGFOROPP";
+            return state;
+        }
 
-            state = "EnterSalvo";
 
+        if ((gamePlayer.getSalvoes().size()
+                < (gamePlayer.getOponent().get().getSalvoes().size()))
+                || (!getSunk(gamePlayer))) {
+            // true si no estan en el mismo turno o ninguno destruyo todos losbarcos del otro
+            state = "PLAY"; // Enter salvos
 
-        } else
-
+        } else if ((gamePlayer.getSalvoes().size()
+                == (gamePlayer.getOponent().get().getSalvoes().size())))
             state = "WAIT";
-
-
+        else if (getSunk(gamePlayer) && (getSunk(gamePlayer.getOponent().get()))) {
+            // Si es Game Over => state = WON,TIE,LOST ?
+            state = "TIE";
+        } else if (getSunk(gamePlayer) && (!getSunk(gamePlayer.getOponent().get())))
+            state = "LOST";
+        else
+            state = "WON";
         return state;
+
     }
+
 
     private Map<String, Object> makeHitsDto(GamePlayer gamePlayer) {
         Map<String, Object> hitsDto = new LinkedHashMap<String, Object>();
@@ -306,6 +323,58 @@ public class SalvoController {
             hitsGamePlayerDto.add(dtoGPHistas);
         }
         return hitsGamePlayerDto;
+    }
+
+
+    private boolean getSunk(GamePlayer gamePlayer) {
+
+
+        int carrier = 0;
+        int battleship = 0;
+        int submarine = 0;
+        int destroyer = 0;
+        int patrolboat = 0;
+
+
+        // ---------- variables para las loc de barcos oponentes (Cada turno)
+        for (Salvo salvo : gamePlayer.getSalvoes()) {
+
+
+            // ---------- comparacion salvo con cada barco
+            for (Ship ship : gamePlayer.getOponent().get().getShips()) {
+                List<String> salvoLocations = new ArrayList<>(salvo.getLocations());
+                salvoLocations.retainAll(ship.getLocations());
+
+                int hitSize = salvoLocations.size();
+                if (hitSize != 0) {
+                    switch (ship.getShipType()) {
+                        case "carrier":
+                            carrier = carrier + hitSize;
+                            break;
+                        case "battleship":
+                            battleship = battleship + hitSize;
+                            break;
+                        case "submarine":
+                            submarine = submarine + hitSize;
+                            break;
+                        case "destroyer":
+                            destroyer = destroyer + hitSize;
+                            break;
+                        case "patrolboat":
+                            patrolboat = patrolboat + hitSize;
+                            break;
+
+                    }
+
+                }
+
+            }
+
+
+        }
+
+        return (carrier == 5 && battleship == 4 && submarine == 3 && destroyer == 3 && patrolboat == 2);
+
     }
 
     private List<String> allHitsTurn(Salvo salvo) {
