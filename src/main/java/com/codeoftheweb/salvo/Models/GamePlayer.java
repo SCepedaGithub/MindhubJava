@@ -29,6 +29,7 @@ public class GamePlayer {
     private Set<Salvo> salvoes;
 
     public GamePlayer() {
+        this.joinDate = new Date();
     }
 
     public GamePlayer(Date joinDate, Player player, Game game) {

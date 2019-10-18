@@ -21,7 +21,7 @@ public class Salvo {
 
     @ElementCollection
     @Column(name = "salvoLocation")
-    Set<String> locations;
+    Set<String> salvoLocations;
 
 
     public GamePlayer getGamePlayer() {
@@ -31,8 +31,9 @@ public class Salvo {
     public int getTurn() {
         return turn;
     }
-    public Set<String> getLocations() {
-        return locations;
+
+    public Set<String> getSalvoLocations() {
+        return salvoLocations;
     }
 
     public Salvo() {
@@ -41,7 +42,7 @@ public class Salvo {
     public Salvo(int turn, GamePlayer gamePlayer, Set<String> locations) {
         this.gamePlayer = gamePlayer;
         this.turn = turn;
-        this.locations = locations;
+        this.salvoLocations = locations;
     }
 
     public long getId() {
@@ -52,7 +53,7 @@ public class Salvo {
         Map<String, Object> salvoDto = new LinkedHashMap<String, Object>();
         salvoDto.put("turn", this.getTurn());
         salvoDto.put("player", this.getGamePlayer().getPlayer().getId());
-        salvoDto.put("locations", this.getLocations());
+        salvoDto.put("locations", this.getSalvoLocations());
         return salvoDto;
     }
 
